@@ -24,14 +24,29 @@ const TileView = styled.div`
 `;
 
 const Photo = styled.img`
-  display: block;
-  width: 100%;
-  object-fit: cover;
+  ${(props) => (props.isActive ? fullscreenStyle : thumbnailStyle)};
 `;
+
+const thumbnailStyle = {
+  display: "block",
+  width: "100%",
+  objectFit: "cover",
+};
+
+const fullscreenStyle = {
+  position: "fixed",
+  top: 0,
+  right: 0,
+  left: 0,
+  bottom: 0,
+  height: "80vh",
+  margin: "auto",
+};
 
 class App extends React.Component {
   state = {
     images: [],
+    currentPhotoId: null,
   };
 
   componentDidMount() {
@@ -50,9 +65,15 @@ class App extends React.Component {
         <GlobalStyles />
         <HeaderWrap> 📸 Picsum </HeaderWrap>
         <TileView>
-          {this.state.images.map((image) => (
-            <Photo src={`https://picsum.photos/200/300?image=${image.id}`} />
-          ))}
+          {this.state.images.map((image) => {
+            const isActive = this.state.currentPhotoId === image.id;
+            <Photo
+              key={image.id}
+              src={`https://picsum.photos/200/300?image=${image.id}`}
+              isActive={isActive}
+              onClick={() => this.setState({ currentPhotoId: image.id })}
+            />;
+          })}
         </TileView>
       </React.Fragment>
     );
